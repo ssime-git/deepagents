@@ -103,12 +103,14 @@ class SubAgent(TypedDict):
     description: str
     prompt: str
     tools: NotRequired[list[str]]
+    model: NotRequired[Union[str, LanguageModelLike]]  # Optional model for this specific sub-agent
 ```
 
 - **name**: This is the name of the subagent, and how the main agent will call the subagent
 - **description**: This is the description of the subagent that is shown to the main agent
 - **prompt**: This is the prompt used for the subagent
 - **tools**: This is the list of tools that the subagent has access to. By default will have access to all tools passed in, as well as all built-in tools.
+- **model**: This is the optional model that this subagent will use. If not specified, the subagent will use the same model as the main agent.
 
 To use it looks like:
 
@@ -130,6 +132,43 @@ agent = create_deep_agent(
 
 By default, `deepagents` will use `"claude-sonnet-4-20250514"`. If you want to use a different model,
 you can pass a [LangChain model object](https://python.langchain.com/docs/integrations/chat/).
+
+### Context Optimization (Optional)
+
+`deepagents` includes built-in context optimization features to help manage context window usage efficiently:
+
+- **`enable_context_optimization`**: Set to `True` to enable automatic context optimization
+- **`context_optimizer`**: Pass a pre-configured `ContextOptimizer` instance for custom settings
+- **`max_context_size`**: Maximum context size for optimization (default: 12000)
+- **`max_active_items`**: Maximum active context items (default: 20)
+
+When context optimization is enabled, the agent gets access to additional tools:
+- `get_context_stats`: Monitor context utilization
+- `add_context_item`: Add items with priority levels
+- `archive_completed_tasks`: Free up context space
+
+Example with context optimization:
+
+```python
+from deepagents import create_deep_agent, ContextOptimizer
+
+# Option 1: Enable built-in context optimization
+agent = create_deep_agent(
+    [internet_search],
+    research_instructions,
+    enable_context_optimization=True,
+    max_context_size=15000,
+    max_active_items=25
+)
+
+# Option 2: Use custom context optimizer
+custom_optimizer = ContextOptimizer(max_context_size=20000, max_active_items=30)
+agent = create_deep_agent(
+    [internet_search],
+    research_instructions,
+    context_optimizer=custom_optimizer
+)
+```
 
 ## Deep Agent Details
 

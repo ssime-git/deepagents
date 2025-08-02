@@ -1,3 +1,17 @@
-deepagents
-langgraph-cli[inmem]
-tavily-python
+# Enhanced deepagents research examples requirements
+# Note: deepagents will be built from source, not installed from PyPI
+
+# Groq LLM provider for multi-model support
+langchain-groq>=0.3.6
+
+# Environment management
+python-dotenv>=1.1.1
+
+# Web search capability
+tavily-python>=0.7.10
+
+# Additional LangGraph tooling
+langgraph-cli[inmem]>=0.3.6
+
+# For rate limiting and error handling
+groq>=0.30.0
